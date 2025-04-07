@@ -1,0 +1,86 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #121212;
+  color: #ffffff;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+:root {
+  --primary-color: #ff7f2a;
+  --primary-color-hover: #ff6600;
+  --secondary-color: #666666;
+  --text-color: #ffffff;
+  --text-color-secondary: #cccccc;
+  --text-muted: #aaaaaa;
+  --text-light-emphasis: #dddddd;
+  --background-color: #121212;
+  --background-color-secondary: #1e1e1e;
+  --border-color: #333333;
+  --success-color: #4caf50;
+  --error-color: #f44336;
+  --warning-color: #ff9800;
+}
+
+/* Codeyzer P2P Logo Animasyonu */
+.app-logo {
+  transition: transform 0.3s ease;
+}
+
+.app-logo:hover {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 5px rgba(255, 127, 42, 0.6));
+}
+
+/* Dosya indirme ikonu animasyonu */
+.shared-files-logo {
+  transition: transform 0.3s ease;
+}
+
+.shared-files-logo:hover {
+  transform: rotate(15deg);
+}
+
+/* Genel metin stillerini iyileştir */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+p {
+  color: var(--text-color-secondary);
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.text-light-emphasis {
+  color: var(--text-light-emphasis) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+/* Form elementleri için okunabilir renkler */
+.form-control {
+  background-color: #2a2a2a;
+  border-color: #444444;
+  color: #ffffff;
+}
+
+.form-control:focus {
+  background-color: #333333;
+  color: #ffffff;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(255, 127, 42, 0.25);
+} 
