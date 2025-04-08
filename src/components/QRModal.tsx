@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
+import './QRModal.css';
 
 interface QRModalProps {
   selectedHash: string | null;
@@ -72,47 +73,18 @@ const QRModal: React.FC<QRModalProps> = ({ selectedHash, getDownloadUrl, onClose
 
   return (
     <div 
-      className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
-      style={{
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        zIndex: 1050,
-        backdropFilter: 'blur(5px)',
-        transition: 'all 0.3s ease'
-      }}
+      className="qr-modal-backdrop"
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >
       <div 
-        className="qr-modal-content animate__animated animate__fadeInUp"
-        style={{
-          width: '90%',
-          maxWidth: '500px',
-          borderRadius: '15px',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
-          border: '1px solid #333',
-          overflow: 'hidden',
-          animation: 'fadeIn 0.3s'
-        }}
+        className="qr-modal-content"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="qr-modal-header p-3" style={{
-          background: 'linear-gradient(45deg, #1a1a1a, #222)',
-          borderBottom: '1px solid #333',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <h5 style={{
-            fontSize: '1.3rem',
-            fontWeight: 'bold',
-            background: 'linear-gradient(45deg, #ff7f2a, #ff6600)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            textShadow: '0 1px 2px rgba(0,0,0,0.3)',
-            margin: 0
-          }}>
-            <i className="bi bi-qr-code me-2 text-orange"></i>
+        <div className="qr-modal-header">
+          <h5 className="qr-modal-title">
+            <i className="bi bi-qr-code me-2"></i>
             QR Kod Paylaşımı
           </h5>
           <button 
@@ -122,16 +94,9 @@ const QRModal: React.FC<QRModalProps> = ({ selectedHash, getDownloadUrl, onClose
             aria-label="Kapat"
           ></button>
         </div>
-        <div className="qr-modal-body text-center py-4" style={{ background: '#1a1a1a' }}>
+        <div className="qr-modal-body">
           <p className="text-light mb-3">Bu QR kodu okutarak dosyayı indirebilirsiniz</p>
-          <div style={{ 
-            background: '#ffffff', 
-            display: 'inline-block', 
-            padding: '15px', 
-            borderRadius: '10px',
-            boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
-            margin: '0 auto 20px'
-          }}>
+          <div className="qr-code-container">
             <QRCodeSVG 
               value={url} 
               size={getQRSize()}
@@ -141,27 +106,25 @@ const QRModal: React.FC<QRModalProps> = ({ selectedHash, getDownloadUrl, onClose
               includeMargin={true}
             />
           </div>
-          <div className="input-group mb-3 mt-3 px-3">
+          <div className="input-group qr-input-group">
             <input 
               type="text" 
-              className="form-control bg-dark text-light border-secondary" 
+              className="form-control qr-input" 
               value={url} 
               readOnly
-              style={{borderRadius: '6px 0 0 6px'}}
             />
             <button 
               className="btn btn-orange" 
               type="button" 
               id="copy-qr-link"
               onClick={handleCopyLink}
-              style={{borderRadius: '0 6px 6px 0'}}
             >
               <i className="bi bi-clipboard me-1"></i>
               Linki Kopyala
             </button>
           </div>
         </div>
-        <div className="qr-modal-footer d-flex justify-content-end p-3" style={{borderTop: '1px solid #333', background: '#1a1a1a'}}>
+        <div className="qr-modal-footer">
           <button 
             type="button" 
             className="btn btn-sm btn-secondary" 

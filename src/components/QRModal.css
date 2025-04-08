@@ -1,0 +1,111 @@
+.qr-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1050;
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease;
+}
+
+.qr-modal-content {
+  width: 90%;
+  max-width: 500px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  border: 1px solid #333;
+  overflow: hidden;
+  animation: fadeIn 0.3s;
+}
+
+.qr-modal-header {
+  background: linear-gradient(45deg, #1a1a1a, #222);
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.qr-modal-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  background: linear-gradient(45deg, #ff7f2a, #ff6600);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  margin: 0;
+}
+
+.qr-modal-title .bi {
+  color: #ff7f2a;
+  margin-right: 0.5rem;
+}
+
+.qr-modal-body {
+  text-align: center;
+  background: #1a1a1a;
+  padding: 1.5rem 1rem;
+}
+
+.qr-code-container {
+  background: #ffffff;
+  display: inline-block;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  margin: 0 auto 20px;
+}
+
+.qr-input-group {
+  margin: 1rem 0.75rem;
+}
+
+.qr-input {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border: 1px solid #444;
+  border-radius: 6px 0 0 6px;
+}
+
+.btn-orange {
+  background-color: #ff7f2a;
+  border-color: #ff7f2a;
+  color: #ffffff;
+  border-radius: 0 6px 6px 0;
+}
+
+.btn-orange:hover {
+  background-color: #ff6600;
+  border-color: #ff6600;
+}
+
+.qr-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #333;
+  background: #1a1a1a;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 576px) {
+  .qr-code-container {
+    padding: 10px;
+  }
+} 

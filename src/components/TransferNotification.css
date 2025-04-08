@@ -1,0 +1,31 @@
+.notification-container {
+  color: #ffffff;
+  font-size: 1rem;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.notification-title {
+  color: #FF7F2A;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.notification-content {
+  color: #cccccc;
+  font-size: 0.9rem;
+}
+
+.notification-item {
+  margin-bottom: 2px;
+}
+
+.notification-label {
+  color: #FF7F2A;
+  font-weight: bold;
+}
+
+.notification-error {
+  color: #dc3545;
+  margin-bottom: 0;
+} 

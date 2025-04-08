@@ -295,54 +295,26 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="container-fluid" style={{ padding: '30px 50px' }}>
+    <div className="main-container container-fluid">
       <ToastProvider />
       {/* Header */}
       <div className="mb-5 text-center">
-        <div className="card p-3 shadow" style={{
-          background: 'linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(40, 40, 40, 0.9))',
-          borderRadius: '16px',
-          border: '1px solid rgba(255, 127, 42, 0.3)',
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)'
-        }}>
+        <div className="app-header-card card p-3 shadow">
           <div className="d-flex justify-content-between align-items-center mb-0">
             <div className="d-flex align-items-center">
               <div className="me-4 position-relative">
-                <div className="rounded-circle d-flex align-items-center justify-content-center" style={{
-                  width: '75px',
-                  height: '75px',
-                  background: 'linear-gradient(135deg, #2c2c2c, #1e1e1e)',
-                  boxShadow: '0 8px 20px rgba(255, 127, 42, 0.2)',
-                  border: '2px solid rgba(255, 127, 42, 0.5)',
-                  transition: 'all 0.3s ease'
-                }}>
-                  <img src="/icon.svg" alt="Codeyzer P2P Logo" className="app-logo" style={{ 
-                    height: '45px',
-                    filter: 'drop-shadow(0 2px 5px rgba(255, 127, 42, 0.5))'
-                  }} />
+                <div className="logo-container">
+                  <img src="/icon.svg" alt="Codeyzer P2P Logo" className="app-logo" />
                 </div>
-                <div className="position-absolute" style={{
-                  width: '16px',
-                  height: '16px',
-                  background: connectionStatus === 'connected' ? '#198754' : connectionStatus === 'connecting' ? '#ffc107' : '#dc3545',
-                  border: '2px solid #1e1e1e',
-                  borderRadius: '50%',
-                  bottom: '3px',
-                  right: '3px',
-                  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)'
-                }}></div>
+                <div className={`connection-indicator ${connectionStatus}`}></div>
               </div>
               <div className="text-start">
-                <h1 className="display-5 fw-bold mb-1" style={{
-                  color: '#ffffff',
-                  textShadow: '0 2px 8px rgba(0, 0, 0, 0.6), 0 0 5px rgba(255, 127, 42, 0.8)'
-                }}>
+                <h1 className="app-title display-5 fw-bold mb-1">
                   Codeyzer P2P
                 </h1>
-                <p className="lead mb-0" style={{
-                  color: '#cccccc',
-                  fontSize: '1.1rem'
-                }}>Hızlı ve güvenli peer-to-peer dosya paylaşım platformu</p>
+                <p className="app-subtitle lead mb-0">
+                  Hızlı ve güvenli peer-to-peer dosya paylaşım platformu
+                </p>
               </div>
             </div>
             

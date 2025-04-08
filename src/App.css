@@ -310,4 +310,80 @@
 .btn-outline-orange.active {
   background-color: #ff7f2a;
   color: #ffffff;
+}
+
+/* App bileşen stilleri */
+.main-container {
+  padding: 30px 50px;
+}
+
+.app-header-card {
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.95), rgba(40, 40, 40, 0.9));
+  border-radius: 16px;
+  border: 1px solid rgba(255, 127, 42, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  margin-bottom: 3rem;
+}
+
+/* Logo container ve logo stilleri */
+.logo-container {
+  width: 75px;
+  height: 75px;
+  background: linear-gradient(135deg, #2c2c2c, #1e1e1e);
+  box-shadow: 0 8px 20px rgba(255, 127, 42, 0.2);
+  border: 2px solid rgba(255, 127, 42, 0.5);
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-logo {
+  height: 45px;
+  filter: drop-shadow(0 2px 5px rgba(255, 127, 42, 0.5));
+  transition: transform 0.3s ease;
+}
+
+.app-logo:hover {
+  transform: scale(1.1);
+}
+
+/* Bağlantı durum göstergesi */
+.connection-indicator {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #1e1e1e;
+  border-radius: 50%;
+  bottom: 3px;
+  right: 3px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  position: absolute;
+}
+
+.connection-indicator.connected {
+  background: #198754;
+}
+
+.connection-indicator.connecting {
+  background: #ffc107;
+}
+
+.connection-indicator.error {
+  background: #dc3545;
+}
+
+/* Başlık ve alt başlık stilleri */
+.app-title {
+  color: #ffffff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6), 0 0 5px rgba(255, 127, 42, 0.8);
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.app-subtitle {
+  color: #cccccc;
+  font-size: 1.1rem;
+  margin-bottom: 0;
 } 

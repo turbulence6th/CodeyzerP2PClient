@@ -1,0 +1,307 @@
+.empty-files-container {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.empty-files-card {
+  padding: 3rem;
+  border: none;
+  background-color: #1e1e1e;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.empty-files-icon {
+  filter: drop-shadow(0 0 10px rgba(255, 127, 42, 0.5));
+  font-size: 3rem;
+  color: #ff7f2a;
+  margin-bottom: 1.5rem;
+}
+
+.empty-files-title {
+  font-weight: 600;
+  background: linear-gradient(45deg, #ff7f2a, #ff6600);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  margin-bottom: 1rem;
+}
+
+.empty-files-text {
+  color: #ffffff;
+  font-size: 1.25rem;
+  max-width: 80%;
+  margin: 0 auto;
+}
+
+/* Dosya listesi başlık stili */
+.file-list-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  background: linear-gradient(45deg, #ff7f2a, #ff6600);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Dosya sayısı rozeti */
+.badge.bg-orange {
+  min-width: 30px;
+  height: 30px;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(45deg, #ff7f2a, #ff6600);
+}
+
+.file-card {
+  margin-bottom: 1rem;
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.file-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.file-card-header {
+  padding: 1rem;
+  border-bottom: 1px solid #333;
+  background-color: #1e1e1e;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.file-info {
+  padding: 1rem;
+  color: #cccccc;
+}
+
+.file-info-icon {
+  color: #ff7f2a;
+  filter: drop-shadow(0 0 5px rgba(255, 127, 42, 0.3));
+}
+
+.file-card-icon {
+  width: 48px;
+  height: 48px;
+  padding: 0.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 127, 42, 0.15);
+  box-shadow: 0 4px 15px rgba(255, 127, 42, 0.1);
+  margin-right: 1rem;
+}
+
+.file-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.file-size {
+  font-size: 0.875rem;
+  color: #aaaaaa;
+  margin-bottom: 0;
+}
+
+.btn-outline-orange {
+  color: #ffffff;
+  border-color: #ff7f2a;
+  border-radius: 6px;
+  padding: 0.35rem 0.65rem;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-orange:hover {
+  background-color: #ff7f2a;
+  color: #ffffff;
+}
+
+.btn-outline-danger {
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 0.35rem 0.65rem;
+  transition: all 0.2s ease;
+}
+
+.file-details-toggle {
+  cursor: pointer;
+  padding: 0.35rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-details-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.file-details-toggle.active {
+  background-color: rgba(255, 127, 42, 0.2);
+}
+
+.download-input-group {
+  margin-bottom: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.download-input-group input {
+  border-radius: 6px 0 0 6px;
+  border-color: #333;
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+.copy-button {
+  background-color: #ff7f2a;
+  border-color: #ff7f2a;
+  color: #ffffff;
+  border-radius: 0 6px 6px 0;
+}
+
+.copy-button:hover {
+  background-color: #ff6600;
+  border-color: #ff6600;
+}
+
+.card-footer {
+  padding: 1.25rem;
+  border-top: 1px solid #333;
+  background-color: #141414;
+  transition: all 0.3s ease;
+}
+
+.downloads-title {
+  font-size: 1.1rem;
+  background: linear-gradient(45deg, #ff7f2a, #ff6600);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+
+.downloads-icon {
+  filter: drop-shadow(0 0 5px rgba(255, 127, 42, 0.5));
+  margin-right: 0.5rem;
+  color: #ff7f2a;
+  font-size: 1.2rem;
+}
+
+.table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+  margin-bottom: 0;
+  border: 1px solid #333;
+}
+
+.table.table-dark {
+  margin-bottom: 0;
+  background-color: #1a1a1a;
+  border-collapse: collapse;
+}
+
+.table.table-dark thead {
+  background-color: #262626;
+  border-bottom: 2px solid #333;
+}
+
+.table.table-dark thead th {
+  padding: 12px 16px;
+  font-weight: 600;
+  color: #fff;
+  border-bottom: none;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.table.table-dark thead th i {
+  font-size: 1rem;
+}
+
+.table.table-dark tbody td {
+  padding: 12px 16px;
+  border-color: #2a2a2a;
+  vertical-align: middle;
+}
+
+.table.table-dark tbody tr:hover {
+  background-color: rgba(255, 127, 42, 0.05);
+}
+
+.table.table-dark tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.badge.bg-dark {
+  background-color: #222 !important;
+  padding: 8px 12px;
+  border-color: #444 !important;
+}
+
+.progress {
+  height: 20px !important;
+  border-radius: 4px !important;
+  background-color: #333 !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2) !important;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: width 0.3s ease-in-out;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.progress-bar.bg-success {
+  background: linear-gradient(45deg, #28a745, #20c997) !important;
+}
+
+.progress-bar.bg-danger {
+  background: linear-gradient(45deg, #dc3545, #c9302c) !important;
+}
+
+.progress-bar.bg-primary {
+  background: linear-gradient(45deg, #007bff, #17a2b8) !important;
+}
+
+.badge {
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  font-weight: 500;
+}
+
+.badge.bg-success {
+  background: linear-gradient(45deg, #28a745, #20c997) !important;
+}
+
+.badge.bg-danger {
+  background: linear-gradient(45deg, #dc3545, #c9302c) !important;
+}
+
+.badge.bg-primary {
+  background: linear-gradient(45deg, #007bff, #17a2b8) !important;
+} 
