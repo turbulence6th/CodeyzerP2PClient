@@ -119,4 +119,61 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+  .file-upload-container {
+    min-height: 200px;
+    padding: 20px;
+  }
+  
+  .file-upload-title {
+    font-size: 1.5rem;
+  }
+  
+  .file-upload-description {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+  
+  .upload-icon {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .file-upload-container {
+    min-height: 150px;
+    padding: 12px;
+  }
+  
+  .file-upload-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .file-upload-description {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .upload-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .spinner-grow.text-orange {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .uploading-indicator p {
+    margin-top: 0.5rem !important;
+    font-size: 1rem !important;
+  }
+  
+  .mb-5 {
+    margin-bottom: 1rem !important;
+  }
 } 

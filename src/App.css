@@ -356,10 +356,11 @@
   height: 16px;
   border: 2px solid #1e1e1e;
   border-radius: 50%;
-  bottom: 3px;
-  right: 3px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   position: absolute;
+  bottom: 3px;
+  right: 3px;
+  z-index: 1;
 }
 
 .connection-indicator.connected {
@@ -386,4 +387,88 @@
   color: #cccccc;
   font-size: 1.1rem;
   margin-bottom: 0;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 992px) {
+  .app-title {
+    font-size: 1.8rem;
+  }
+  
+  .app-subtitle {
+    font-size: 1rem;
+  }
+  
+  .app-header-card {
+    padding: 1.5rem;
+  }
+  
+  .logo-container {
+    margin-right: 1rem;
+  }
+  
+  .app-logo {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    padding: 1rem;
+  }
+  
+  .app-header-card {
+    padding: 1.5rem 1rem;
+  }
+  
+  .logo-container {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+    width: 65px;
+    height: 65px;
+  }
+  
+  .app-title {
+    font-size: 1.5rem;
+  }
+  
+  .app-subtitle {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .app-title {
+    font-size: 1.3rem;
+  }
+  
+  .app-logo {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .logo-container {
+    position: relative;
+  }
+  
+  .connection-indicator {
+    width: 12px;
+    height: 12px;
+    border-width: 1px;
+    bottom: 2px;
+    right: 2px;
+  }
+  
+  .mb-5 {
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .app-header-card {
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .main-container {
+    padding: 0.75rem;
+  }
 } 

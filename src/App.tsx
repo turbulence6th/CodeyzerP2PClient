@@ -49,6 +49,8 @@ const App: React.FC = () => {
 
   // WebSocket bağlantısını kur
   useEffect(() => {
+    // index.html'de zaten viewport meta etiketi var, o yüzden buraya eklemiyoruz
+    
     const maxRetries = 3;
     let retryCount = 0;
     
@@ -298,17 +300,17 @@ const App: React.FC = () => {
     <div className="main-container container-fluid">
       <ToastProvider />
       {/* Header */}
-      <div className="mb-5 text-center">
+      <div className="mb-4 mb-md-5 text-center">
         <div className="app-header-card card p-3 shadow">
-          <div className="d-flex justify-content-between align-items-center mb-0">
-            <div className="d-flex align-items-center">
-              <div className="me-4 position-relative">
+          <div className="d-flex justify-content-between align-items-center mb-0 flex-column flex-md-row">
+            <div className="d-flex align-items-center flex-column flex-md-row">
+              <div className="me-md-4 mb-2 mb-md-0 position-relative">
                 <div className="logo-container">
                   <img src="/icon.svg" alt="Codeyzer P2P Logo" className="app-logo" />
+                  <div className={`connection-indicator ${connectionStatus}`}></div>
                 </div>
-                <div className={`connection-indicator ${connectionStatus}`}></div>
               </div>
-              <div className="text-start">
+              <div className="text-center text-md-start">
                 <h1 className="app-title display-5 fw-bold mb-1">
                   Codeyzer P2P
                 </h1>
@@ -318,7 +320,7 @@ const App: React.FC = () => {
               </div>
             </div>
             
-            <div className="connection-status">
+            <div className="connection-status mt-3 mt-md-0">
               <ConnectionStatus connectionStatus={connectionStatus} />
             </div>
           </div>

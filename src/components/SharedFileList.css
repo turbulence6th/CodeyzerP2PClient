@@ -41,6 +41,12 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+}
+
+.file-list-title i {
+  margin-top: -3px;
 }
 
 /* Dosya sayısı rozeti */
@@ -155,6 +161,8 @@
 .download-input-group {
   margin-bottom: 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  width: 100%;
 }
 
 .download-input-group input {
@@ -162,6 +170,10 @@
   border-color: #333;
   background-color: #2a2a2a;
   color: #ffffff;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .copy-button {
@@ -169,6 +181,10 @@
   border-color: #ff7f2a;
   color: #ffffff;
   border-radius: 0 6px 6px 0;
+  min-width: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .copy-button:hover {
@@ -258,12 +274,15 @@
   height: 20px !important;
   border-radius: 4px !important;
   background-color: #333 !important;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2) !important;
+  box-shadow: none !important;
   overflow: hidden;
   margin-bottom: 0;
+  width: 100%;
+  position: relative;
 }
 
 .progress-bar {
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -304,4 +323,420 @@
 
 .badge.bg-primary {
   background: linear-gradient(45deg, #007bff, #17a2b8) !important;
+}
+
+/* Normal ekranlar için ilerleme çubuğu stili */
+.table.table-dark .progress-custom {
+  height: 20px !important;
+  border-radius: 4px !important;
+  background-color: #333 !important;
+  box-shadow: none !important;
+  overflow: hidden;
+  margin: 0 !important;
+  width: 100%;
+  position: relative;
+  display: block;
+}
+
+.table.table-dark .progress-bar-custom {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 20px;
+  transition: width 0.3s ease-in-out;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* İlerleme yüzde değeri için özel stil */
+.table.table-dark .progress-custom::after {
+  content: attr(data-progress);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 20px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  pointer-events: none; /* Tıklama olaylarının altındaki öğelere geçmesini sağlar */
+}
+
+/* Responsive Tasarım */
+@media (max-width: 992px) {
+  .file-name {
+    font-size: 1rem;
+  }
+  
+  .empty-files-title {
+    font-size: 1.5rem;
+  }
+  
+  .empty-files-text {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .file-list-title {
+    font-size: 1.5rem;
+  }
+  
+  .empty-files-container {
+    margin-top: 2rem;
+  }
+  
+  .empty-files-card {
+    padding: 2rem;
+  }
+  
+  .empty-files-icon {
+    font-size: 2.5rem;
+  }
+  
+  .table.table-dark thead th {
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+  
+  .table.table-dark tbody td {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Mobil görünüm için dosya kart yapısını değiştir */
+  .file-card .row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start !important;
+  }
+  
+  .file-card .col-auto:first-child {
+    width: auto !important;
+    padding: 1rem 0.5rem 1rem 1rem;
+    text-align: left;
+  }
+  
+  .file-card .col-md-3 {
+    width: calc(100% - 80px);
+    text-align: left;
+    padding: 1rem 1rem 0.5rem 0;
+  }
+  
+  .file-info-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 0 !important;
+  }
+  
+  .file-name {
+    justify-content: flex-start;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  
+  .file-size {
+    font-size: 0.8rem;
+  }
+  
+  /* URL kutusu ve düğmeler */
+  .download-input-group {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    display: flex;
+  }
+  
+  .download-input-group input {
+    flex: 1;
+    min-width: 0;
+    padding-right: 5px;
+    padding-left: 8px;
+    font-size: 0.8rem;
+  }
+  
+  .copy-button {
+    flex: 0 0 42px;
+    padding: 0.25rem;
+  }
+  
+  /* Dosya kartı alanları */
+  .file-url-col {
+    padding: 0.5rem 1rem !important;
+    width: 100%;
+  }
+  
+  .file-actions-col {
+    border-top: 1px solid #333;
+    margin-top: 0.5rem;
+  }
+  
+  .file-actions-col .d-flex {
+    width: 100%;
+    justify-content: space-evenly !important;
+  }
+  
+  .file-actions-col .btn {
+    margin: 0 0.25rem;
+    min-width: 40px;
+  }
+  
+  .action-buttons {
+    display: flex;
+    width: 100%;
+  }
+  
+  .action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+  }
+  
+  .file-list-title {
+    font-size: 1.3rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-right: 0;
+  }
+  
+  .file-list-title i {
+    margin-top: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+  }
+  
+  .badge.bg-orange {
+    margin-top: 0;
+    margin-left: 0 !important;
+    height: 24px;
+  }
+  
+  .table-responsive {
+    font-size: 0.8rem;
+  }
+  
+  .downloads-title {
+    font-size: 1rem;
+  }
+  
+  .progress {
+    height: 16px !important;
+    width: 100%;
+    box-shadow: none !important;
+    margin: 0 !important;
+    position: relative;
+    display: block !important;
+  }
+  
+  .table.table-dark tbody td {
+    vertical-align: middle;
+    padding: 8px;
+    position: relative;
+  }
+  
+  .table.table-dark td:nth-child(2) {
+    display: table-cell !important;
+    padding: 8px;
+    vertical-align: middle;
+  }
+  
+  .table.table-dark td .progress {
+    width: 100%;
+    height: 16px !important;
+    margin: 0 !important;
+    background-color: #333 !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    position: relative;
+    overflow: hidden;
+    display: block !important;
+  }
+  
+  .progress-bar {
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  
+  .table.table-dark {
+    border-radius: 6px;
+  }
+  
+  .table.table-dark td {
+    padding: 8px;
+    vertical-align: middle;
+  }
+  
+  .table.table-dark td:nth-child(1),
+  .table.table-dark td:nth-child(3) {
+    text-align: center;
+  }
+  
+  .table.table-dark td:nth-child(2) {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  
+  /* Tablo içindeki hücreler */
+  .ip-cell, .status-cell {
+    text-align: center;
+    padding: 8px !important;
+    vertical-align: middle !important;
+  }
+  
+  .progress-cell {
+    padding: 8px !important;
+    vertical-align: middle !important;
+  }
+  
+  /* İlerleme çubuğu ve hücre stilini tümüyle yeniden yazıyoruz */
+  .table.table-dark td.progress-cell {
+    padding: 8px !important;
+    vertical-align: middle !important;
+  }
+  
+  td.progress-cell .progress {
+    height: 18px !important;
+    background-color: #333 !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+  }
+  
+  td.progress-cell .progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    font-size: 11px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 18px;
+    box-shadow: none !important;
+    text-align: center;
+  }
+  
+  /* Rozet stilleri */
+  .badge {
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  
+  /* Tamamen özel sınıflarla ilerleme çubuğu stilleri */
+  td.progress-cell {
+    padding: 8px !important;
+    vertical-align: middle !important;
+    height: auto !important;
+  }
+  
+  /* Mobil ekranlar için ilerleme çubuğu stilleri */
+  .table.table-dark .progress-custom {
+    height: 18px !important;
+    background-color: #333 !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    position: relative;
+    overflow: hidden;
+    width: 100% !important;
+    display: block !important;
+  }
+  
+  .table.table-dark .progress-bar-custom {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 18px !important;
+    text-align: center;
+    box-shadow: none !important;
+    z-index: 1;
+  }
+  
+  .table.table-dark .progress-custom::after {
+    font-size: 11px;
+    line-height: 18px;
+  }
+  
+  .file-card .col-py-3 {
+    width: 100%;
+    padding: 0.5rem 1rem;
+  }
+  
+  .file-card .col-auto:last-child {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 1rem 1rem 1rem;
+  }
+  
+  /* Dosya ikon stilini mobil için düzenle */
+  .file-info-icon {
+    font-size: 2rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Dosya kartını düzenle */
+  .file-card-row {
+    margin: 0;
+  }
+  
+  .file-icon-col {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 50px !important;
+  }
+  
+  /* Dosya ikon konteyneri mobil için stil */
+  .icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: auto;
+  }
+  
+  h4.mb-4.d-flex {
+    gap: 0.5rem;
+  }
+}
+
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 } 

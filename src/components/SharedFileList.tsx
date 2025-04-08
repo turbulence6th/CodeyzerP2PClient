@@ -82,12 +82,12 @@ const SharedFileList: React.FC<SharedFileListProps> = ({
 
   return (
     <div className="mt-5">
-      <h4 className="mb-4 d-flex align-items-center">
-        <span className="file-list-title">
+      <h4 className="mb-4 d-flex align-items-center justify-content-center justify-content-md-start flex-wrap">
+        <div className="file-list-title me-2">
           <i className="bi bi-share me-2 text-orange"></i>
-          Paylaşılan Dosyalar
-        </span>
-        <span className="badge bg-orange rounded-pill ms-2 d-flex align-items-center justify-content-center">
+          <span>Paylaşılan Dosyalar</span>
+        </div>
+        <span className="badge bg-orange rounded-pill d-flex align-items-center justify-content-center">
           {files.length}
         </span>
       </h4>
@@ -97,12 +97,14 @@ const SharedFileList: React.FC<SharedFileListProps> = ({
           <div className="col-12" key={item.hash}>
             <div className="file-card">
               <div className="card-body p-0">
-                <div className="row g-0 align-items-center">
-                  <div className="col-auto ps-3 pe-1 py-3 text-center" style={{width: '65px'}}>
-                    <i className={`bi ${getFileIcon(item.filename)} fs-1 file-info-icon`}></i>
+                <div className="row g-0 align-items-center file-card-row">
+                  <div className="col-auto file-icon-col ps-3 pe-1 py-3 text-center" style={{width: '65px'}}>
+                    <div className="icon-container">
+                      <i className={`bi ${getFileIcon(item.filename)} fs-1 file-info-icon`}></i>
+                    </div>
                   </div>
                   
-                  <div className="col-md-3 col-sm-4 ps-2 py-3">
+                  <div className="col-md-3 col-sm-6 file-info-col ps-2 py-3">
                     <h5 className="file-name" title={item.filename}>
                       {item.filename}
                     </h5>
@@ -111,13 +113,14 @@ const SharedFileList: React.FC<SharedFileListProps> = ({
                     </p>
                   </div>
                   
-                  <div className="col py-3">
+                  <div className="col-md py-3 file-url-col">
                     <div className="download-input-group input-group input-group-sm">
                       <input
                         id={`link-${item.hash}`}
                         className="form-control"
                         value={getDownloadUrl(item.hash)}
                         readOnly
+                        title={getDownloadUrl(item.hash)}
                       />
                       <button 
                         className="copy-button btn btn-sm" 
@@ -130,24 +133,24 @@ const SharedFileList: React.FC<SharedFileListProps> = ({
                     </div>
                   </div>
                   
-                  <div className="col-auto py-3 px-3">
-                    <div className="d-flex gap-2">
+                  <div className="col-auto py-3 px-3 file-actions-col">
+                    <div className="d-flex gap-2 flex-wrap justify-content-center action-buttons">
                       <button 
-                        className="btn btn-sm btn-outline-orange" 
+                        className="btn btn-sm btn-outline-orange action-btn" 
                         onClick={() => onShowQr(item.hash)}
                         title="QR Kod Göster"
                       >
                         <i className="bi bi-qr-code"></i>
                       </button>
                       <button 
-                        className="btn btn-sm btn-outline-danger" 
+                        className="btn btn-sm btn-outline-danger action-btn" 
                         onClick={() => onRemove(item)}
                         title="Paylaşımı Kaldır"
                       >
                         <i className="bi bi-trash"></i>
                       </button>
                       <button 
-                        className={`btn btn-sm btn-outline-orange file-details-toggle ${expandedRows[item.hash] ? 'active' : ''}`}
+                        className={`btn btn-sm btn-outline-orange file-details-toggle action-btn ${expandedRows[item.hash] ? 'active' : ''}`}
                         onClick={() => toggleRow(item.hash)}
                         title={expandedRows[item.hash] ? "Detayları Gizle" : "Detayları Göster"}
                       >
@@ -175,27 +178,30 @@ const SharedFileList: React.FC<SharedFileListProps> = ({
                         <tbody>
                           {item.downloads.map((download, dlIndex) => (
                             <tr key={`${download.ip}-${download.streamHash}`}>
-                              <td>
+                              <td className="ip-cell">
                                 <span className="badge bg-dark text-light border border-secondary">
                                   <i className="bi bi-pc-display me-1"></i>
                                   {download.ip}
                                 </span>
                               </td>
-                              <td>
-                                <div className="progress">
+                              <td className="progress-cell">
+                                <div 
+                                  className="progress progress-custom" 
+                                  data-progress={download.progress > 0 ? `${download.progress.toFixed(1)}%` : ''}
+                                >
                                   <div 
-                                    className={`progress-bar ${getStatusClass(download.status)}`} 
+                                    className={`progress-bar progress-bar-custom ${getStatusClass(download.status)}`} 
                                     role="progressbar" 
                                     style={{width: `${download.progress}%`}} 
                                     aria-valuenow={download.progress} 
                                     aria-valuemin={0} 
                                     aria-valuemax={100}
                                   >
-                                    {download.progress.toFixed(1)}%
+                                    {/* Yüzde değeri artık ::after pseudo-element olarak gösteriliyor */}
                                   </div>
                                 </div>
                               </td>
-                              <td>
+                              <td className="status-cell">
                                 {download.status === 'success' && 
                                   <span className="badge bg-success">
                                     <i className="bi bi-check-circle me-1"></i>

@@ -104,8 +104,64 @@
   }
 }
 
-@media (max-width: 576px) {
+/* Responsive Tasarım */
+@media (max-width: 768px) {
+  .qr-modal .modal-dialog {
+    max-width: 90%;
+    margin: 1.75rem auto;
+  }
+  
   .qr-code-container {
-    padding: 10px;
+    padding: 1rem;
+  }
+  
+  .qr-title {
+    font-size: 1.5rem;
+  }
+  
+  .qr-description {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .qr-modal .modal-dialog {
+    max-width: 95%;
+    margin: 1rem auto;
+  }
+  
+  .qr-code-container {
+    padding: 0.75rem;
+  }
+  
+  .qr-title {
+    font-size: 1.3rem;
+  }
+  
+  .qr-description {
+    font-size: 0.85rem;
+  }
+  
+  .qr-code {
+    max-width: 200px;
+  }
+  
+  .qr-download-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .qr-url {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+  
+  .qr-modal .modal-body {
+    padding: 1rem;
+  }
+  
+  .qr-modal .modal-header,
+  .qr-modal .modal-footer {
+    padding: 0.75rem 1rem;
   }
 } 

@@ -83,11 +83,11 @@ const FileUploader: React.FC<FileUploaderProps> = ({ onFileSelect, isUploading }
             </div>
           ) : (
             <>
-              <div className={`upload-icon mb-4 ${isDragging ? 'pulse' : ''}`}>
-                <i className="bi bi-cloud-arrow-up-fill display-3 text-orange"></i>
+              <div className={`upload-icon ${isDragging ? 'pulse' : ''}`}>
+                <i className="bi bi-cloud-arrow-up-fill text-orange"></i>
               </div>
-              <h3 className="file-upload-title mb-3">Codeyzer P2P ile Dosya Paylaşımı</h3>
-              <p className="file-upload-description mb-4">
+              <h3 className="file-upload-title">Codeyzer P2P ile Dosya Paylaşımı</h3>
+              <p className="file-upload-description">
                 Dosyanızı sürükleyip bırakın veya panele tıklayın
               </p>
               
