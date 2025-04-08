@@ -1,7 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { store } from './redux/store';
 import './index.css';
 import App from './App';
 
@@ -15,7 +13,5 @@ const root = ReactDOM.createRoot(
 root.render(
   // React.StrictMode'u kaldırdık çünkü bu mod geliştirme sırasında componentleri iki kez render eder
   // ve bu da WebSocket bağlantımız için sorun oluşturabilir
-  <Provider store={store}>
-    <App />
-  </Provider>
+  <App />
 ); 

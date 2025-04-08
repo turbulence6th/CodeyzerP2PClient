@@ -1,22 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FileItem, DownloadResponse } from './types';
-import { toast } from 'react-toastify';
-
-// Redux
-import { useAppSelector, useAppDispatch } from './redux/hooks';
-import { 
-  setSharedFiles, 
-  addSharedFile, 
-  removeSharedFile, 
-  updateDownloadProgress,
-  updateDownloadStatus,
-  addDownload,
-  setPendingFiles,
-  removePendingFile,
-  reorderFiles,
-  setSocketConnected
-} from './redux/filesSlice';
-import { loadFilesFromStorage } from './redux/localStorageMiddleware';
 
 // Components
 import FileUploader from './components/FileUploader';
@@ -27,9 +10,7 @@ import ToastProvider, {
   showFileNotification, 
   showShareSuccessNotification, 
   showTransferCompleteNotification, 
-  showTransferFailedNotification,
-  showFileSelectionErrorNotification,
-  showSelectFileNotification
+  showTransferFailedNotification 
 } from './components/ToastProvider';
 
 // Services
@@ -51,19 +32,9 @@ declare global {
   }
 }
 
-// Toast pozisyonu için yardımcı fonksiyon
-const getToastPosition = () => {
-  return window.innerWidth <= 576 ? "top-center" : "bottom-right";
-};
-
 const App: React.FC = () => {
-  // Redux state ve dispatch
-  const dispatch = useAppDispatch();
-  const sharedFiles = useAppSelector(state => state.files.sharedFiles);
-  const pendingFiles = useAppSelector(state => state.files.pendingFiles);
-  const socketConnected = useAppSelector(state => state.files.socketConnected);
-
-  // Local state
+  // State
+  const [sharedFiles, setSharedFiles] = useState<FileItem[]>([]);
   const [selectedQrHash, setSelectedQrHash] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [isConnected, setIsConnected] = useState<boolean>(false);
@@ -73,6 +44,9 @@ const App: React.FC = () => {
   const webSocketService = useRef<WebSocketService>(new WebSocketService(WEBSOCKET_URL));
   const apiService = useRef<ApiService>(new ApiService(BACKEND_URL));
   
+  // Connection state
+  const socketConnected = useRef<boolean>(false);
+
   // WebSocket bağlantısını kur
   useEffect(() => {
     // index.html'de zaten viewport meta etiketi var, o yüzden buraya eklemiyoruz
@@ -85,7 +59,7 @@ const App: React.FC = () => {
         console.error('WebSocket bağlantısı kurulamadı, maksimum yeniden deneme sayısına ulaşıldı.');
         setIsConnected(false);
         setConnectionStatus('error');
-        dispatch(setSocketConnected(false));
+        socketConnected.current = false;
         return;
       }
       
@@ -94,14 +68,14 @@ const App: React.FC = () => {
       webSocketService.current.connect(
         (frame) => {
           console.log('WebSocket bağlantısı başarılı');
-          dispatch(setSocketConnected(true));
+          socketConnected.current = true;
           setIsConnected(true);
           setConnectionStatus('connected');
           retryCount = 0; // Başarılı bağlantıda sayacı sıfırla
         },
         (error) => {
           console.error('WebSocket bağlantı hatası:', error);
-          dispatch(setSocketConnected(false));
+          socketConnected.current = false;
           setIsConnected(false);
           setConnectionStatus('connecting'); // Yeniden bağlanmaya çalışırken "connecting" olarak güncelle
           retryCount++;
@@ -117,185 +91,12 @@ const App: React.FC = () => {
     return () => {
       webSocketService.current.disconnect(() => {
         console.log('WebSocket bağlantısı kapatıldı');
-        dispatch(setSocketConnected(false));
+        socketConnected.current = false;
         setIsConnected(false);
         setConnectionStatus('error');
       });
     };
-  }, [dispatch]);
-
-  // Kaydedilmiş dosya bilgilerini yükle
-  useEffect(() => {
-    const savedData = loadFilesFromStorage();
-    if (savedData.sharedFiles.length > 0) {
-      console.log('Kaydedilmiş dosya bilgileri bulundu:', savedData.sharedFiles);
-      
-      // Dosyaları "dosya seçilmesi gerekiyor" durumunda ekle
-      const newPendingFiles: string[] = [];
-      const newSharedFiles: FileItem[] = [];
-      
-      savedData.sharedFiles.forEach((fileInfo: Omit<FileItem, 'blob'>) => {
-        // Paylaşılan dosyalar listesine ekle ama blob olmadan
-        newSharedFiles.push({
-          ...fileInfo,
-          blob: null as any // Geçici olarak null, "Dosya Seç" butonu ile güncellenecek
-        });
-        
-        // Seçilmesi gereken dosyalar listesine ekle
-        newPendingFiles.push(fileInfo.hash);
-      });
-      
-      dispatch(setSharedFiles(newSharedFiles));
-      dispatch(setPendingFiles(newPendingFiles));
-      
-      // Sayfa yenilendikten sonra bilgilendirme mesajı göster
-      setTimeout(() => {
-        showSelectFileNotification(newPendingFiles.length);
-      }, 1000); // 1 saniye sonra göster
-    }
-  }, [dispatch]);
-
-  // Dosya seçme işlemi - "Tekrar Seç" butonu için
-  const handleFileSelectForHash = (hash: string) => {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    
-    fileInput.onchange = (event) => {
-      const target = event.target as HTMLInputElement;
-      if (target.files && target.files.length > 0) {
-        const file = target.files[0];
-        
-        // Dosya bilgilerini bul
-        const fileIndex = sharedFiles.findIndex(item => item.hash === hash);
-        if (fileIndex === -1) return;
-        
-        // Doğru dosya seçildi mi kontrol et (isim ve boyut kontrolü)
-        if (file.name === sharedFiles[fileIndex].filename && file.size === sharedFiles[fileIndex].size) {
-          // Dosya blob'unu güncelle
-          const updatedFiles = [...sharedFiles];
-          updatedFiles[fileIndex] = {
-            ...updatedFiles[fileIndex],
-            blob: file
-          };
-          dispatch(setSharedFiles(updatedFiles));
-          
-          // Bekleyen dosyalar listesinden kaldır
-          dispatch(removePendingFile(hash));
-          
-          // WebSocket aboneliğini kur
-          if (socketConnected) {
-            webSocketService.current.subscribe('/topic/' + hash, (message) => {
-              const jsonResp: DownloadResponse = JSON.parse(message.body);
-              handleWebSocketMessage(jsonResp, file, hash);
-            });
-          }
-        } else {
-          // Uyumsuz dosya seçildi, hata bildir
-          showFileSelectionErrorNotification(
-            sharedFiles[fileIndex].filename,
-            sharedFiles[fileIndex].size,
-            file.name,
-            file.size
-          );
-        }
-      }
-    };
-    
-    fileInput.click();
-  };
-  
-  // WebSocket mesajlarını işle
-  const handleWebSocketMessage = (jsonResp: DownloadResponse, file: File, hash: string) => {
-    // Bildirim göster
-    const fileItem = sharedFiles.find(item => item.hash === hash);
-    if (!fileItem) return;
-    
-    showFileNotification(fileItem.filename, fileItem.size, jsonResp.ip);
-    
-    // Aynı IP ve streamHash kombinasyonu için mevcut indirme var mı kontrol et
-    const existingDownloadIndex = sharedFiles.findIndex(item => 
-      item.hash === hash && 
-      item.downloads.some(d => d.ip === jsonResp.ip && d.streamHash === jsonResp.streamHash)
-    );
-    
-    // Eğer aynı indirme zaten varsa ve durumu devam ediyorsa, yeni indirme ekleme
-    if (existingDownloadIndex !== -1) {
-      console.log('Bu dosya için aktif indirme zaten var:', jsonResp.ip, jsonResp.streamHash);
-      return;
-    }
-    
-    const download = {
-      ip: jsonResp.ip,
-      progress: 0,
-      status: 'progress' as const,
-      streamHash: jsonResp.streamHash
-    };
-
-    dispatch(addDownload({
-      hash,
-      download
-    }));
-
-    const handleProgress = (progress: number) => {
-      dispatch(updateDownloadProgress({
-        hash,
-        ip: jsonResp.ip,
-        streamHash: jsonResp.streamHash,
-        progress
-      }));
-    };
-
-    const handleSuccess = () => {
-      dispatch(updateDownloadStatus({
-        hash,
-        ip: jsonResp.ip,
-        streamHash: jsonResp.streamHash,
-        status: 'success'
-      }));
-      
-      // Dosya bilgilerini bul
-      const fileIndex = sharedFiles.findIndex(item => item.hash === hash);
-      if (fileIndex !== -1) {
-        // Başarılı transfer bildirimi
-        showTransferCompleteNotification(
-          sharedFiles[fileIndex].filename, 
-          sharedFiles[fileIndex].size, 
-          jsonResp.ip
-        );
-      }
-    };
-
-    const handleError = () => {
-      dispatch(updateDownloadStatus({
-        hash,
-        ip: jsonResp.ip,
-        streamHash: jsonResp.streamHash,
-        status: 'failed'
-      }));
-      
-      // Dosya bilgilerini bul
-      const fileIndex = sharedFiles.findIndex(item => item.hash === hash);
-      if (fileIndex !== -1) {
-        // Başarısız transfer bildirimi
-        showTransferFailedNotification(
-          sharedFiles[fileIndex].filename, 
-          sharedFiles[fileIndex].size, 
-          jsonResp.ip, 
-          "Yükleme sırasında hata oluştu"
-        );
-      }
-    };
-
-    // Dosya yükleme işlemini başlat
-    apiService.current.uploadFile(
-      file,
-      hash,
-      jsonResp.streamHash,
-      handleProgress,
-      handleSuccess,
-      handleError
-    );
-  };
+  }, []);
 
   // Dosya yükleme işlemi
   const handleFileSelect = (file: File) => {
@@ -311,57 +112,188 @@ const App: React.FC = () => {
           downloads: []
         };
         
-        dispatch(addSharedFile(newItem));
+        setSharedFiles(prev => [...prev, newItem]);
         
         // Başarılı dosya paylaşımı bildirimi
         showShareSuccessNotification(file.name, file.size, data.shareHash);
 
-        if (socketConnected) {
-          webSocketService.current.subscribe('/topic/' + data.shareHash, (message) => {
+        if (socketConnected.current) {
+          const subscription = webSocketService.current.subscribe('/topic/' + data.shareHash, (message) => {
             const jsonResp: DownloadResponse = JSON.parse(message.body);
-            handleWebSocketMessage(jsonResp, file, data.shareHash);
+            
+            // Bildirim göster
+            showFileNotification(file.name, file.size, jsonResp.ip);
+            
+            // Aynı IP ve streamHash kombinasyonu için mevcut indirme var mı kontrol et
+            const existingDownloadIndex = sharedFiles.findIndex(item => 
+              item.hash === data.shareHash && 
+              item.downloads.some(d => d.ip === jsonResp.ip && d.streamHash === jsonResp.streamHash)
+            );
+            
+            // Eğer aynı indirme zaten varsa ve durumu devam ediyorsa, yeni indirme ekleme
+            if (existingDownloadIndex !== -1) {
+              console.log('Bu dosya için aktif indirme zaten var:', jsonResp.ip, jsonResp.streamHash);
+              return;
+            }
+            
+            const download = {
+              ip: jsonResp.ip,
+              progress: 0,
+              status: 'progress' as const,
+              streamHash: jsonResp.streamHash // Benzersiz stream hash'i saklayalım
+            };
+
+            setSharedFiles(prev => {
+              const fileIndex = prev.findIndex(item => item.hash === data.shareHash);
+              if (fileIndex === -1) return prev;
+
+              const updatedFiles = [...prev];
+              updatedFiles[fileIndex] = {
+                ...updatedFiles[fileIndex],
+                downloads: [...updatedFiles[fileIndex].downloads, download]
+              };
+              
+              return updatedFiles;
+            });
+
+            const handleProgress = (progress: number) => {
+              setSharedFiles(prev => {
+                const fileIndex = prev.findIndex(item => item.hash === data.shareHash);
+                if (fileIndex === -1) return prev;
+
+                const downloadIndex = prev[fileIndex].downloads.findIndex(
+                  d => d.ip === jsonResp.ip && d.streamHash === jsonResp.streamHash
+                );
+                if (downloadIndex === -1) return prev;
+
+                const updatedFiles = [...prev];
+                const updatedDownloads = [...updatedFiles[fileIndex].downloads];
+                updatedDownloads[downloadIndex] = {
+                  ...updatedDownloads[downloadIndex],
+                  progress
+                };
+
+                updatedFiles[fileIndex] = {
+                  ...updatedFiles[fileIndex],
+                  downloads: updatedDownloads
+                };
+                
+                return updatedFiles;
+              });
+            };
+
+            const handleSuccess = () => {
+              setSharedFiles(prev => {
+                const fileIndex = prev.findIndex(item => item.hash === data.shareHash);
+                if (fileIndex === -1) return prev;
+
+                const downloadIndex = prev[fileIndex].downloads.findIndex(
+                  d => d.ip === jsonResp.ip && d.streamHash === jsonResp.streamHash
+                );
+                if (downloadIndex === -1) return prev;
+
+                const updatedFiles = [...prev];
+                const updatedDownloads = [...updatedFiles[fileIndex].downloads];
+                updatedDownloads[downloadIndex] = {
+                  ...updatedDownloads[downloadIndex],
+                  status: 'success'
+                };
+
+                updatedFiles[fileIndex] = {
+                  ...updatedFiles[fileIndex],
+                  downloads: updatedDownloads
+                };
+                
+                // Dosya gönderimi tamamlandı bildirimi göster
+                showTransferCompleteNotification(file.name, file.size, jsonResp.ip);
+                
+                return updatedFiles;
+              });
+            };
+
+            const handleError = () => {
+              setSharedFiles(prev => {
+                const fileIndex = prev.findIndex(item => item.hash === data.shareHash);
+                if (fileIndex === -1) return prev;
+
+                const downloadIndex = prev[fileIndex].downloads.findIndex(
+                  d => d.ip === jsonResp.ip && d.streamHash === jsonResp.streamHash
+                );
+                if (downloadIndex === -1) return prev;
+
+                const updatedFiles = [...prev];
+                const updatedDownloads = [...updatedFiles[fileIndex].downloads];
+                updatedDownloads[downloadIndex] = {
+                  ...updatedDownloads[downloadIndex],
+                  status: 'failed'
+                };
+
+                updatedFiles[fileIndex] = {
+                  ...updatedFiles[fileIndex],
+                  downloads: updatedDownloads
+                };
+                
+                // Dosya gönderim hatası bildirimi göster
+                showTransferFailedNotification(file.name, file.size, jsonResp.ip, "Gönderim sırasında bir hata oluştu");
+                
+                return updatedFiles;
+              });
+            };
+
+            apiService.current.uploadFile(
+              file, 
+              jsonResp.shareHash, 
+              jsonResp.streamHash, 
+              handleProgress, 
+              handleSuccess, 
+              handleError
+            );
+          }, {
+            id: data.shareHash
           });
+
+          // Subscription null değilse ekle
+          if (!subscription) {
+            console.error('WebSocket subscription başarısız');
+          }
+        } else {
+          console.error('WebSocket bağlantısı kurulamadığı için dosya izlenemiyor');
         }
+        setIsUploading(false);
       })
-      .finally(() => {
+      .catch(error => {
+        console.error('Dosya paylaşım hatası:', error);
         setIsUploading(false);
       });
   };
 
-  // Dosya kaldırma işlemi
+  // Dosya kaldırma
   const handleRemoveFile = (item: FileItem) => {
     apiService.current.unshareFile(item.hash)
       .then(() => {
-        dispatch(removeSharedFile(item.hash));
-        
-        // Bekleyen dosyalar listesinden kaldır
-        if (pendingFiles.includes(item.hash)) {
-          dispatch(removePendingFile(item.hash));
+        setSharedFiles(prev => prev.filter(x => x.hash !== item.hash));
+        if (socketConnected.current) {
+          webSocketService.current.getClient()?.unsubscribe(item.hash);
         }
       })
       .catch(error => {
-        console.error('Dosya kaldırılırken hata oluştu:', error);
+        console.error('Dosya kaldırma hatası:', error);
       });
   };
 
-  // Dosya bağlantısını kopyalama
+  // Link kopyalama
   const handleCopyLink = (hash: string) => {
-    navigator.clipboard.writeText(apiService.current.getDownloadUrl(hash));
+    UtilsService.copyInputValue(`link-${hash}`);
   };
 
-  // QR kodu görüntüleme
+  // QR kod gösterme
   const handleShowQr = (hash: string) => {
     setSelectedQrHash(hash);
   };
 
-  // QR modal kapatma
+  // QR modal kapatıldığında hash'i sıfırla
   const handleQrModalClose = () => {
     setSelectedQrHash(null);
-  };
-
-  // Dosya sırasını güncelleme işlemi
-  const handleReorderFiles = (reorderedFiles: FileItem[]) => {
-    dispatch(reorderFiles(reorderedFiles));
   };
 
   return (
@@ -389,12 +321,12 @@ const App: React.FC = () => {
             </div>
             
             <div className="connection-status mt-3 mt-md-0">
-              <ConnectionStatus status={connectionStatus} />
+              <ConnectionStatus connectionStatus={connectionStatus} />
             </div>
           </div>
         </div>
       </div>
-      
+
       {/* Dosya Yükleme Bileşeni */}
       <FileUploader 
         onFileSelect={handleFileSelect} 
@@ -403,23 +335,20 @@ const App: React.FC = () => {
 
       {/* Paylaşılan Dosyalar Listesi */}
       <SharedFileList 
-        files={sharedFiles} 
-        onRemove={handleRemoveFile} 
-        onCopyLink={handleCopyLink} 
-        onShowQr={handleShowQr} 
-        pendingFiles={pendingFiles}
-        onSelectFile={handleFileSelectForHash}
-        onReorder={handleReorderFiles}
+        files={sharedFiles}
+        onCopy={handleCopyLink}
+        onRemove={handleRemoveFile}
+        onShowQr={handleShowQr}
+        getDownloadUrl={apiService.current.getDownloadUrl.bind(apiService.current)}
+        formatSize={UtilsService.formatSize}
       />
-      
+
       {/* QR Kod Modalı */}
-      {selectedQrHash && (
-        <QRModal 
-          hash={selectedQrHash} 
-          onClose={handleQrModalClose} 
-          url={apiService.current.getDownloadUrl(selectedQrHash)}
-        />
-      )}
+      <QRModal 
+        selectedHash={selectedQrHash}
+        getDownloadUrl={apiService.current.getDownloadUrl.bind(apiService.current)}
+        onClose={handleQrModalClose}
+      />
     </div>
   );
 };

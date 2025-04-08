@@ -3,20 +3,22 @@ import { QRCodeSVG } from 'qrcode.react';
 import './QRModal.css';
 
 interface QRModalProps {
-  hash: string | null;
-  url: string;
+  selectedHash: string | null;
+  getDownloadUrl: (hash: string) => string;
   onClose?: () => void;
 }
 
-const QRModal: React.FC<QRModalProps> = ({ hash, url, onClose = () => {} }) => {
+const QRModal: React.FC<QRModalProps> = ({ selectedHash, getDownloadUrl, onClose = () => {} }) => {
+  const [url, setUrl] = useState<string>('');
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
-  // hash değiştiğinde görünürlük durumunu güncelle
+  // selectedHash değiştiğinde URL ve görünürlük durumunu güncelle
   useEffect(() => {
-    if (hash) {
+    if (selectedHash) {
+      setUrl(getDownloadUrl(selectedHash));
       setIsVisible(true);
     }
-  }, [hash]);
+  }, [selectedHash, getDownloadUrl]);
 
   const handleClose = () => {
     setIsVisible(false);
@@ -65,7 +67,7 @@ const QRModal: React.FC<QRModalProps> = ({ hash, url, onClose = () => {} }) => {
   };
 
   // Görünür değilse hiçbir şey render etme
-  if (!isVisible || !hash) {
+  if (!isVisible || !selectedHash) {
     return null;
   }
 
