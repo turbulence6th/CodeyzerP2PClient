@@ -16,8 +16,8 @@ import UtilsService from './services/UtilsService';
 import './App.css';
 
 // Backend API ve WebSocket URL'leri
-const BACKEND_URL = 'http://localhost:8080';
-const WEBSOCKET_URL = `${BACKEND_URL}/gs-guide-websocket`;
+const BACKEND_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+const WEBSOCKET_URL = process.env.REACT_APP_WEBSOCKET_URL || `${BACKEND_URL}/gs-guide-websocket`;
 
 // Bootstrap'i global olarak tanımlayacağız (window.bootstrap'e erişim için)
 declare global {
