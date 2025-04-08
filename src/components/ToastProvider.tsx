@@ -5,6 +5,8 @@ import FileNotification from './FileNotification';
 import ShareNotification from './ShareNotification';
 import TransferCompleteNotification from './TransferCompleteNotification';
 import TransferFailedNotification from './TransferFailedNotification';
+import FileSelectionErrorNotification from './FileSelectionErrorNotification';
+import SelectFileNotification from './SelectFileNotification';
 import UtilsService from '../services/UtilsService';
 import './toast.css';
 
@@ -75,6 +77,44 @@ export const showTransferFailedNotification = (filename: string, fileSize: numbe
       ip={ip}
       error={error}
     />, 
+    {
+      position: getToastPosition(),
+      autoClose: 8000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true
+    }
+  );
+};
+
+export const showFileSelectionErrorNotification = (
+  expectedFilename: string, 
+  expectedSize: number, 
+  selectedFilename: string, 
+  selectedSize: number
+) => {
+  toast.error(
+    <FileSelectionErrorNotification 
+      expectedFilename={expectedFilename}
+      expectedSize={expectedSize}
+      selectedFilename={selectedFilename}
+      selectedSize={selectedSize}
+    />, 
+    {
+      position: getToastPosition(),
+      autoClose: 8000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true
+    }
+  );
+};
+
+export const showSelectFileNotification = (count: number) => {
+  toast.warning(
+    <SelectFileNotification count={count} />, 
     {
       position: getToastPosition(),
       autoClose: 8000,

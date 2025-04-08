@@ -17,7 +17,13 @@
 }
 
 .notification-item {
-  margin-bottom: 2px;
+  margin-bottom: 1px;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  max-width: 100%;
+  line-height: 1.3;
+  font-size: 0.75rem;
 }
 
 .notification-label {
@@ -33,8 +39,10 @@
 /* Mobil ekranlar için bildirim stilleri */
 @media (max-width: 576px) {
   .notification-container {
-    padding: 8px;
+    padding: 12px;
     width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
   }
   
   .notification-title {
@@ -45,14 +53,33 @@
   
   .notification-content {
     font-size: 0.8rem;
+    text-align: center;
   }
   
   .notification-item {
     margin-bottom: 1px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
     max-width: 100%;
+    line-height: 1.3;
+    font-size: 0.75rem;
+  }
+  
+  /* Rozet (badge) stilini mobil için düzelt */
+  .notification-item .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.7rem;
+    margin: 0 0.2rem;
+    vertical-align: middle;
+  }
+  
+  .notification-item .badge i {
+    font-size: 0.65rem;
+    margin-right: 0.2rem !important;
   }
   
   /* Yatay görünümde dosya adı daha kompakt */
@@ -65,5 +92,17 @@
   .notification-label {
     display: inline-block;
     min-width: 50px;
+  }
+  
+  /* Küçük ekran için metin stilini düzenle */
+  .notification-item .small {
+    font-size: 0.7rem;
+    opacity: 0.85;
+    margin-top: 0.25rem !important;
+  }
+  
+  /* Dosya sayısını vurgula */
+  .notification-item .text-warning.fw-bold {
+    font-size: 0.8rem;
   }
 } 
