@@ -1,0 +1,40 @@
+/* Toast container stil düzenlemeleri */
+.codeyzer-toast-container {
+  padding: 0 !important;
+}
+
+/* Toast çeper stili */
+.codeyzer-toast {
+  margin-bottom: 1rem !important;
+  padding: 1px !important;
+  border: 2px solid #FF7F2A !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+  background-color: rgba(30, 30, 30, 0.95) !important;
+}
+
+/* Toast içerik konteyneri */
+.Toastify__toast-body {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Toast içeriği */
+.Toastify__toast-body > div:last-child {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* İkon düzenlemesi */
+.Toastify__toast-icon {
+  width: 24px !important;
+  height: 24px !important;
+  margin-left: 5px !important;
+  margin-right: 5px !important;
+}
+
+/* Toast kapatma butonu */
+.Toastify__close-button {
+  color: #FF7F2A !important;
+  opacity: 1 !important;
+} 

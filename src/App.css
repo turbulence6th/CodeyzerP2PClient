@@ -248,7 +248,20 @@
 
 .app-logo:hover {
   transform: scale(1.1);
-  filter: drop-shadow(0 0 5px rgba(76, 141, 255, 0.5));
+}
+
+/* Dönen simge animasyonu */
+@keyframes rotating {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.rotating {
+  animation: rotating 1.5s linear infinite;
 }
 
 /* Dosya indirme ikonu animasyonu */
