@@ -160,68 +160,79 @@ const SharedFileList: React.FC<SharedFileListProps> = ({
                   </div>
                 </div>
                 
-                {expandedRows[item.hash] && item.downloads.length > 0 && (
+                {expandedRows[item.hash] && (
                   <div className="card-footer">
                     <h6 className="downloads-title">
                       <i className="downloads-icon bi bi-download me-2"></i>
                       İndirme Detayları
                     </h6>
                     <div className="table-responsive">
-                      <table className="table table-sm table-hover table-dark mb-0">
-                        <thead>
-                          <tr>
-                            <th><i className="bi bi-globe2 me-2 text-orange"></i>IP Adresi</th>
-                            <th><i className="bi bi-bar-chart-fill me-2 text-orange"></i>İlerleme</th>
-                            <th><i className="bi bi-info-circle me-2 text-orange"></i>Durum</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {item.downloads.map((download, dlIndex) => (
-                            <tr key={`${download.ip}-${download.streamHash}`}>
-                              <td className="ip-cell">
-                                <span className="badge bg-dark text-light border border-secondary">
-                                  <i className="bi bi-pc-display me-1"></i>
-                                  {download.ip}
-                                </span>
-                              </td>
-                              <td className="progress-cell">
-                                <div 
-                                  className="progress progress-custom" 
-                                  data-progress={download.progress > 0 ? `${download.progress.toFixed(1)}%` : ''}
-                                >
-                                  <div 
-                                    className={`progress-bar progress-bar-custom ${getStatusClass(download.status)}`} 
-                                    role="progressbar" 
-                                    style={{width: `${download.progress}%`}} 
-                                    aria-valuenow={download.progress} 
-                                    aria-valuemin={0} 
-                                    aria-valuemax={100}
-                                  >
-                                    {/* Yüzde değeri artık ::after pseudo-element olarak gösteriliyor */}
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="status-cell">
-                                {download.status === 'success' && 
-                                  <span className="badge bg-success">
-                                    <i className="bi bi-check-circle me-1"></i>
-                                    Tamamlandı
-                                  </span>}
-                                {download.status === 'failed' && 
-                                  <span className="badge bg-danger">
-                                    <i className="bi bi-exclamation-triangle me-1"></i>
-                                    Başarısız
-                                  </span>}
-                                {download.status === 'progress' && 
-                                  <span className="badge bg-primary">
-                                    <i className="bi bi-arrow-repeat me-1"></i>
-                                    Aktarılıyor
-                                  </span>}
-                              </td>
+                      {item.downloads.length > 0 ? (
+                        <table className="table table-sm table-hover table-dark mb-0">
+                          <thead>
+                            <tr>
+                              <th><i className="bi bi-globe2 me-2 text-orange"></i>IP</th>
+                              <th><i className="bi bi-bar-chart-fill me-2 text-orange"></i>İlerleme</th>
+                              <th><i className="bi bi-info-circle me-2 text-orange"></i>Durum</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {item.downloads.map((download, dlIndex) => (
+                              <tr key={`${download.ip}-${download.streamHash}`}>
+                                <td className="ip-cell">
+                                  <span className="badge bg-dark text-light border border-secondary">
+                                    <i className="bi bi-pc-display d-none d-md-inline me-1"></i>
+                                    <span className="ip-address">{download.ip}</span>
+                                  </span>
+                                </td>
+                                <td className="progress-cell">
+                                  <div 
+                                    className="progress progress-custom" 
+                                    data-progress={download.progress > 0 ? `${download.progress.toFixed(1)}%` : ''}
+                                  >
+                                    <div 
+                                      className={`progress-bar progress-bar-custom ${getStatusClass(download.status)}`} 
+                                      role="progressbar" 
+                                      style={{width: `${download.progress}%`}} 
+                                      aria-valuenow={download.progress} 
+                                      aria-valuemin={0} 
+                                      aria-valuemax={100}
+                                    >
+                                      {/* Yüzde değeri artık ::after pseudo-element olarak gösteriliyor */}
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="status-cell">
+                                  {download.status === 'success' && 
+                                    <span className="badge bg-success">
+                                      <i className="bi bi-check-circle me-1"></i>
+                                      <span className="d-none d-md-inline">Tamamlandı</span>
+                                      <span className="d-inline d-md-none">Tamam</span>
+                                    </span>}
+                                  {download.status === 'failed' && 
+                                    <span className="badge bg-danger">
+                                      <i className="bi bi-exclamation-triangle me-1"></i>
+                                      <span className="d-none d-md-inline">Başarısız</span>
+                                      <span className="d-inline d-md-none">Hata</span>
+                                    </span>}
+                                  {download.status === 'progress' && 
+                                    <span className="badge bg-primary">
+                                      <i className="bi bi-arrow-repeat me-1"></i>
+                                      <span className="d-none d-md-inline">Aktarılıyor</span>
+                                      <span className="d-inline d-md-none">Aktif</span>
+                                    </span>}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : (
+                        <div className="empty-downloads-message">
+                          <i className="bi bi-inbox text-orange"></i>
+                          <div>Henüz indirme kaydı bulunmuyor</div>
+                          <small className="text-muted">Bu dosyayı henüz kimse indirmemiş</small>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

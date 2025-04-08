@@ -37,4 +37,40 @@
 .Toastify__close-button {
   color: #FF7F2A !important;
   opacity: 1 !important;
+}
+
+/* Mobil ekranlarda bildirim stilleri */
+@media (max-width: 576px) {
+  .Toastify__toast-container--top-center {
+    top: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .codeyzer-toast {
+    margin-bottom: 0.5rem !important;
+    border-radius: 8px !important;
+    width: 90% !important;
+    max-width: 320px !important;
+  }
+  
+  /* İlk toast için üst margin ekle */
+  .codeyzer-toast:first-child {
+    margin-top: 0.5rem !important;
+  }
+  
+  /* Toast içinde yatay padding ekle */
+  .Toastify__toast-body > div:last-child {
+    padding: 0 0.5rem !important;
+  }
+  
+  /* İkon boyutunu küçült */
+  .Toastify__toast-icon {
+    width: 20px !important;
+    height: 20px !important;
+    margin-left: 4px !important;
+    margin-right: 4px !important;
+  }
 } 

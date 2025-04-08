@@ -28,4 +28,42 @@
 .notification-error {
   color: #dc3545;
   margin-bottom: 0;
+}
+
+/* Mobil ekranlar için bildirim stilleri */
+@media (max-width: 576px) {
+  .notification-container {
+    padding: 8px;
+    width: 100%;
+  }
+  
+  .notification-title {
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+    text-align: center;
+  }
+  
+  .notification-content {
+    font-size: 0.8rem;
+  }
+  
+  .notification-item {
+    margin-bottom: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+  
+  /* Yatay görünümde dosya adı daha kompakt */
+  .notification-item:first-child {
+    max-width: 100%;
+    font-size: 0.75rem;
+  }
+  
+  /* Etiket ve içeriği ayrı satırlarda göster */
+  .notification-label {
+    display: inline-block;
+    min-width: 50px;
+  }
 } 

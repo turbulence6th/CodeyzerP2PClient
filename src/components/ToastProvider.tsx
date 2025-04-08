@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ToastContainer, toast, cssTransition } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FileNotification from './FileNotification';
@@ -8,6 +8,11 @@ import TransferFailedNotification from './TransferFailedNotification';
 import UtilsService from '../services/UtilsService';
 import './toast.css';
 
+// Responsive toast position için yardımcı fonksiyon
+const getToastPosition = () => {
+  return window.innerWidth <= 576 ? "top-center" : "bottom-right";
+};
+
 export const showFileNotification = (filename: string, fileSize: number, ip: string) => {
   toast.info(
     <FileNotification 
@@ -16,7 +21,7 @@ export const showFileNotification = (filename: string, fileSize: number, ip: str
       ip={ip}
     />, 
     {
-      position: "bottom-right",
+      position: getToastPosition(),
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
@@ -34,7 +39,7 @@ export const showShareSuccessNotification = (filename: string, fileSize: number,
       shareHash={shareHash}
     />, 
     {
-      position: "bottom-right",
+      position: getToastPosition(),
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
@@ -52,7 +57,7 @@ export const showTransferCompleteNotification = (filename: string, fileSize: num
       ip={ip}
     />, 
     {
-      position: "bottom-right",
+      position: getToastPosition(),
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
@@ -71,7 +76,7 @@ export const showTransferFailedNotification = (filename: string, fileSize: numbe
       error={error}
     />, 
     {
-      position: "bottom-right",
+      position: getToastPosition(),
       autoClose: 8000,
       hideProgressBar: false,
       closeOnClick: true,
@@ -82,9 +87,23 @@ export const showTransferFailedNotification = (filename: string, fileSize: numbe
 };
 
 const ToastProvider: React.FC = () => {
+  const [toastPosition, setToastPosition] = useState(getToastPosition());
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setToastPosition(getToastPosition());
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+  
   return (
     <ToastContainer
-      position="bottom-right"
+      position={toastPosition as any}
       autoClose={5000}
       hideProgressBar={false}
       newestOnTop
