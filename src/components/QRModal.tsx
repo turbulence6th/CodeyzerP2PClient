@@ -4,21 +4,20 @@ import './QRModal.css';
 
 interface QRModalProps {
   selectedHash: string | null;
-  getDownloadUrl: (hash: string) => string;
   onClose?: () => void;
 }
 
-const QRModal: React.FC<QRModalProps> = ({ selectedHash, getDownloadUrl, onClose = () => {} }) => {
+const QRModal: React.FC<QRModalProps> = ({ selectedHash, onClose = () => {} }) => {
   const [url, setUrl] = useState<string>('');
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   // selectedHash değiştiğinde URL ve görünürlük durumunu güncelle
   useEffect(() => {
     if (selectedHash) {
-      setUrl(getDownloadUrl(selectedHash));
+      setUrl(`${window.location.origin}/${selectedHash}`);
       setIsVisible(true);
     }
-  }, [selectedHash, getDownloadUrl]);
+  }, [selectedHash]);
 
   const handleClose = () => {
     setIsVisible(false);

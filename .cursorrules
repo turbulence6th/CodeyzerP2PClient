@@ -1,0 +1,64 @@
+## CodeyzerP2PClient Projesi Özeti (.cursorrules)
+
+Bu dosya, CodeyzerP2PClient projesi hakkında şimdiye kadar biriktirilen önemli bilgileri ve kararları özetlemektedir.
+
+### Genel Amaç
+CodeyzerP2PClient, React ve TypeScript kullanılarak geliştirilmiş bir web istemci uygulamasıdır. Temel amacı, `CodeyzerP2PServer` ile etkileşim kurarak kullanıcıların kolayca dosya paylaşmasını ve başkaları tarafından paylaşılan dosyaları indirmesini sağlamaktır.
+
+### Temel Özellikler ve Geliştirme Noktaları
+
+1.  **İstemci Tarafı Yönlendirme (Routing):**
+    *   **Kütüphane:** `react-router-dom`.
+    *   **Yapılandırma Yeri:** Yönlendirme mantığının büyük bir kısmı `index.tsx` dosyasına taşınmıştır.
+    *   **Tanımlı Rotalar:**
+        *   `/`: Ana uygulama sayfasını (`App.tsx` bileşenini) render eder. Genellikle dosya paylaşımının başlatıldığı veya genel bilgilerin sunulduğu yerdir.
+        *   `/:shareHash`: Dinamik bir rota olup, URL'deki `shareHash` parametresini alarak ilgili dosyanın indirme sayfasını (`DownloadPage.tsx` bileşenini) render eder.
+
+2.  **İndirme Sayfası (`DownloadPage.tsx`):**
+    *   **Amaç:** Kullanıcılara, bir `shareHash` aracılığıyla paylaşılan dosyanın bilgilerini göstermek ve indirme işlemini başlatmaları için bir arayüz sunmak.
+    *   **İşlevsellik Adımları:**
+        1.  URL'den `shareHash` parametresini `useParams` hook'u ile alır.
+        2.  Alınan `shareHash` ile `ApiService.getFileInfo(shareHash)` fonksiyonunu çağırır. Bu fonksiyon, sunucudaki `/file/info/{hash}` endpoint'ine bir GET isteği gönderir.
+        3.  Sunucudan dönen dosya bilgilerini (dosya adı, boyutu, tipi) alır.
+        4.  Veri çekilirken bir yükleme (loading) göstergesi sunar.
+        5.  Dosya bilgileri başarıyla alındığında, bu bilgileri ve bir "İndir" butonunu kullanıcıya gösterir.
+        6.  Sunucudan hata (özellikle 404 - Dosya Bulunamadı) döndüğünde, kullanıcıya uygun bir hata mesajı gösterir.
+    *   **Hata Yönetimi ve Kullanıcı Arayüzü:**
+        *   Hata mesajları için özel bir stil (`custom-error-panel`) tanımlanmıştır: kırmızı arka plan üzerine beyaz metin.
+        *   Hata durumlarında daha önce var olan "Ana Sayfaya Dön" butonu `DownloadPage.tsx` içerisinden kaldırılmıştır. Kullanıcıların ana sayfaya tarayıcı üzerinden veya başka bir yolla dönmesi beklenir.
+
+3.  **Dosya Paylaşımı ve Sahip Bilgilerinin İstemcide Yönetimi:**
+    *   **Paylaşım Sırasında Alınan Bilgiler:** Bir kullanıcı kendi istemcisinden bir dosya paylaştığında, `CodeyzerP2PServer` bu paylaşım için benzersiz bir `shareHash` ve gizli bir `ownerToken` üretip istemciye geri döner.
+    *   **`ownerToken`'ın Önemi:** `ownerToken`, paylaşımın gerçek sahibi olduğunu kanıtlamak için kritik bir bilgidir.
+    *   **İstemcide Saklama (Öneri):** İstemcinin, aldığı `shareHash` ve `ownerToken` ikilisini (örneğin tarayıcının `localStorage` veya `sessionStorage`'ında) saklaması gerekmektedir. Bu, özellikle tarayıcı sekmesi kapatılıp tekrar açıldığında veya uzun süreli paylaşımlarda, sunucuya gönderilecek "kalp atışı" (heartbeat) istekleri ile paylaşımın aktif tutulabilmesi veya kopan bir paylaşımın geri alınabilmesi (reclaim) için zorunludur.
+
+4.  **Temel Sunucu Etkileşimleri (Öncesi ve Genel):**
+    *   Aşağıdaki etkileşimler, istemcinin `CodeyzerP2PServer`'daki temel (sizinle birlikte eklenen `/file/info` gibi yenilikler öncesindeki) endpoint'lerle nasıl haberleştiğini veya haberleşebileceğini gösterir.
+    *   **Dosya Paylaşımı Başlatma:**
+        *   Kullanıcı bir dosya seçip paylaşmak istediğinde, istemci `ShareRequestDTO` (dosya adı, boyutu vb. içeren) bir nesne hazırlar.
+        *   Bu DTO, sunucunun `POST /file/share` endpoint'ine gönderilir.
+        *   Sunucudan `ShareResponseDTO` (içinde `shareHash` ve `ownerToken` barındıran) alınır. Bu bilgiler istemci tarafında saklanır (örn: `localStorage` veya uygulama state'i).
+    *   **Dosya Yükleme (Gönderici Tarafı):**
+        *   Paylaşım başlatıldıktan sonra, gönderici istemci seçilen dosyayı parçalara (chunk) ayırır.
+        *   Her bir parça, sunucunun `POST /file/upload/{shareHash}/{streamHash}` endpoint'ine ayrı HTTP POST istekleriyle gönderilir. `shareHash` ve uygun bir `streamHash` (veya chunk index) path parametreleri olarak kullanılır.
+    *   **Dosya İndirme (Alıcı Tarafı):**
+        *   Kullanıcı bir `shareHash` ile paylaşılan dosyayı indirmek istediğinde (örneğin, bir indirme linkine tıkladığında), istemci sunucunun `GET /file/download/{shareHash}` endpoint'ine bir istek yapar.
+        *   Sunucu, dosya verisini HTTP yanıtı olarak akıtmaya başlar ve istemci bu veriyi alıp kullanıcıya dosya olarak kaydetme seçeneği sunar veya doğrudan gösterir.
+    *   **Paylaşımı Sonlandırma:**
+        *   Paylaşım sahibi, paylaşımı durdurmak istediğinde, istemci `UnshareRequestDTO` (ilgili `shareHash` ve `ownerToken`'ı içeren) hazırlar.
+        *   Bu DTO, sunucunun `POST /file/unshare` endpoint'ine gönderilir.
+    *   **Paylaşım İstatistiklerini Görüntüleme (Olası Kullanım):**
+        *   İstemci, bir paylaşımın durumu hakkında bilgi (örneğin, kaç kişi indiriyor, ne kadar ilerledi vb.) göstermek isterse, sunucunun `GET /file/stats/{shareHash}` endpoint'ini çağırabilir ve dönen `Map` verisini işleyebilir.
+
+### Kullanılan Teknolojiler ve Kütüphaneler
+*   **React:** Kullanıcı arayüzü geliştirmek için temel kütüphane.
+*   **TypeScript:** Statik tip denetimi ile daha güvenli ve yönetilebilir kod yazımı için.
+*   `react-router-dom`: İstemci tarafı yönlendirme işlemleri için.
+*   `axios` (veya benzeri bir HTTP istemcisi, `ApiService` içinde kullanılır): Sunucu ile iletişim kurmak için.
+
+### Yapılandırma Dosyaları
+*   `package.json`: Proje bağımlılıklarını, script'lerini ve diğer meta verilerini içerir.
+*   `tsconfig.json`: TypeScript derleyici ayarlarını yapılandırır.
+*   `index.tsx`: Uygulamanın giriş noktasıdır ve `react-router-dom` yönlendirme yapılandırmasını içerir.
+
+Bu özet, istemci uygulamasının mevcut mimarisini, işlevselliğini ve sunucu ile etkileşim noktalarını yansıtmaktadır. 

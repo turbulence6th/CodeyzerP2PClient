@@ -2,6 +2,7 @@ export interface FileItem {
   filename: string;
   size: number;
   hash: string;
+  ownerToken: string;
   blob: File;
   downloads: Download[];
 }
@@ -15,6 +16,7 @@ export interface Download {
 
 export interface ShareResponse {
   shareHash: string;
+  ownerToken: string;
 }
 
 export interface DownloadResponse {
@@ -29,4 +31,11 @@ export interface Frame {
   headers: any;
   body: string;
   [key: string]: any;
+}
+
+// Sunucudan gelen dosya bilgilerini tutacak DTO
+export interface FileInfoDTO {
+  fileName: string;
+  fileSize: number; // Sunucuda Long, burada number olabilir
+  fileType: string;
 } 

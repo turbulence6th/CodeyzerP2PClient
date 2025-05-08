@@ -7,7 +7,6 @@ interface SharedFileListProps {
   onCopy: (hash: string) => void;
   onRemove: (item: FileItem) => void;
   onShowQr: (hash: string) => void;
-  getDownloadUrl: (hash: string) => string;
   formatSize: (size: number) => string;
 }
 
@@ -16,7 +15,6 @@ const SharedFileList: React.FC<SharedFileListProps> = ({
   onCopy, 
   onRemove, 
   onShowQr, 
-  getDownloadUrl, 
   formatSize 
 }) => {
   const [expandedRows, setExpandedRows] = useState<{[key: string]: boolean}>({});
@@ -118,9 +116,9 @@ const SharedFileList: React.FC<SharedFileListProps> = ({
                       <input
                         id={`link-${item.hash}`}
                         className="form-control"
-                        value={getDownloadUrl(item.hash)}
+                        value={`${window.location.origin}/${item.hash}`}
                         readOnly
-                        title={getDownloadUrl(item.hash)}
+                        title={`${window.location.origin}/${item.hash}`}
                       />
                       <button 
                         className="copy-button btn btn-sm" 

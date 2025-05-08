@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import DownloadPage from './DownloadPage';
 
 // Cross-Origin Resource Sharing (CORS) için
 // Tarayıcılar genellikle farklı kökenlere yapılan istekleri güvenlik nedenleriyle kısıtlar
@@ -13,5 +15,11 @@ const root = ReactDOM.createRoot(
 root.render(
   // React.StrictMode'u kaldırdık çünkü bu mod geliştirme sırasında componentleri iki kez render eder
   // ve bu da WebSocket bağlantımız için sorun oluşturabilir
-  <App />
+  <BrowserRouter>
+    <Routes>
+      <Route path="/:shareHash" element={<DownloadPage />} />
+      <Route path="/" element={<App />} />
+      {/* İleride başka ana route'lar buraya eklenebilir */}
+    </Routes>
+  </BrowserRouter>
 ); 

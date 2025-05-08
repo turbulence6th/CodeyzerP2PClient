@@ -63,6 +63,24 @@ class WebSocketService {
     return this.client.subscribe(destination, callback, headers);
   }
 
+  /**
+   * Belirtilen hedefe bir mesaj gönderir.
+   * @param destination Hedef adres (örn: /app/p2p/...) 
+   * @param body Gönderilecek mesaj gövdesi (JSON.stringify ile string'e çevrilecek)
+   * @param headers İsteğe bağlı STOMP başlıkları
+   */
+  publish(destination: string, body: any, headers?: any): void {
+    if (this.client && this.isConnected) {
+      try {
+        this.client.send(destination, headers || {}, JSON.stringify(body));
+      } catch (error) {
+        console.error(`Failed to send message to ${destination}:`, error);
+      }
+    } else {
+      console.warn('Cannot send message, WebSocket is not connected.');
+    }
+  }
+
   getIsConnected(): boolean {
     return this.isConnected;
   }

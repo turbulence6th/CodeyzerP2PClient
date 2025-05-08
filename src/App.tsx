@@ -98,6 +98,60 @@ const App: React.FC = () => {
     };
   }, []);
 
+  // Kalp Atışı Mekanizması (WebSocket üzerinden)
+  useEffect(() => {
+    let heartbeatInterval: NodeJS.Timeout | null = null;
+    const heartbeatFrequency = 30000; // 30 saniyede bir
+    const heartbeatDestination = "/app/p2p/shares/heartbeat"; // Sunucudaki @MessageMapping adresi
+
+    const sendWsHeartbeat = () => {
+      if (sharedFiles.length > 0) {
+        const payload = { 
+          shares: sharedFiles.map(f => ({ shareHash: f.hash, ownerToken: f.ownerToken })) 
+        };
+        webSocketService.current.publish(heartbeatDestination, payload);
+      } else {
+         // Paylaşım yoksa ve interval hala çalışıyorsa durdur
+         if (heartbeatInterval) {
+             clearInterval(heartbeatInterval);
+             heartbeatInterval = null;
+             console.log("Heartbeat interval stopped (no shares).");
+         }
+      }
+    };
+
+    if (isConnected && sharedFiles.length > 0) {
+      // Bağlantı kurulduğunda ve paylaşım olduğunda hemen bir kere gönder
+      sendWsHeartbeat();
+      
+      // Ardından periyodik olarak gönder
+      // Zaten çalışan bir interval varsa temizle (önceki state değişikliğinden kalmış olabilir)
+      if (heartbeatInterval) clearInterval(heartbeatInterval);
+      
+      heartbeatInterval = setInterval(sendWsHeartbeat, heartbeatFrequency);
+      console.log("WebSocket Heartbeat interval started.");
+
+    } else {
+      // Bağlantı yoksa veya paylaşılacak dosya kalmadıysa interval'ı temizle
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+        console.log("WebSocket Heartbeat interval stopped (disconnected or no shares).");
+      }
+    }
+
+    // Component unmount edildiğinde veya bağımlılıklar değiştiğinde interval'ı temizle
+    return () => {
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        console.log("WebSocket Heartbeat interval cleaned up on unmount.");
+      }
+    };
+    
+  }, [isConnected, sharedFiles]); // Bağımlılıklar: Bağlantı durumu ve paylaşılan dosyaların kendisi
+                                // sharedFiles bağımlılığı, her dosya eklendiğinde/çıkarıldığında
+                                // interval'ın yeniden kurulmasını sağlar, bu da en güncel listeyi gönderir.
+
   // Dosya yükleme işlemi
   const handleFileSelect = (file: File) => {
     setIsUploading(true);
@@ -108,6 +162,7 @@ const App: React.FC = () => {
           filename: file.name,
           size: file.size,
           hash: data.shareHash,
+          ownerToken: data.ownerToken,
           blob: file,
           downloads: []
         };
@@ -143,9 +198,15 @@ const App: React.FC = () => {
               streamHash: jsonResp.streamHash // Benzersiz stream hash'i saklayalım
             };
 
+            let ownerTokenForUpload = ""; // Default boş, bulunamazsa hata olabilir
             setSharedFiles(prev => {
               const fileIndex = prev.findIndex(item => item.hash === data.shareHash);
-              if (fileIndex === -1) return prev;
+              if (fileIndex === -1) {
+                console.error("Upload için FileItem bulunamadı! Hash:", data.shareHash);
+                return prev;
+              }
+
+              ownerTokenForUpload = prev[fileIndex].ownerToken; // Token'ı burada alalım
 
               const updatedFiles = [...prev];
               updatedFiles[fileIndex] = {
@@ -155,6 +216,28 @@ const App: React.FC = () => {
               
               return updatedFiles;
             });
+            
+            // Eğer token alınamadıysa upload başlatılamaz
+            if (!ownerTokenForUpload) {
+                 console.error("OwnerToken bulunamadığı için upload başlatılamıyor, hash:", data.shareHash);
+                 // Kullanıcıya hata göstermek iyi olabilir
+                 showTransferFailedNotification(file.name, file.size, jsonResp.ip, "İç sunucu hatası nedeniyle yükleme başlatılamadı.");
+                 // İlgili indirme talebini başarısız olarak işaretleyebiliriz
+                  setSharedFiles(prev => {
+                    const fileIndex = prev.findIndex(item => item.hash === data.shareHash);
+                    if (fileIndex === -1) return prev;
+                    const downloadIndex = prev[fileIndex].downloads.findIndex(
+                      d => d.ip === jsonResp.ip && d.streamHash === jsonResp.streamHash
+                    );
+                    if (downloadIndex === -1) return prev;
+                    const updatedFiles = [...prev];
+                    const updatedDownloads = [...updatedFiles[fileIndex].downloads];
+                    updatedDownloads[downloadIndex] = { ...updatedDownloads[downloadIndex], status: 'failed' };
+                    updatedFiles[fileIndex] = { ...updatedFiles[fileIndex], downloads: updatedDownloads };
+                    return updatedFiles;
+                });
+                 return; // Upload işlemine devam etme
+            }
 
             const handleProgress = (progress: number) => {
               setSharedFiles(prev => {
@@ -244,6 +327,7 @@ const App: React.FC = () => {
               file, 
               jsonResp.shareHash, 
               jsonResp.streamHash, 
+              ownerTokenForUpload,
               handleProgress, 
               handleSuccess, 
               handleError
@@ -263,21 +347,23 @@ const App: React.FC = () => {
       })
       .catch(error => {
         console.error('Dosya paylaşım hatası:', error);
+        showTransferFailedNotification(file.name, file.size, "", "Dosya paylaşılırken bir hata oluştu.");
+      })
+      .finally(() => {
         setIsUploading(false);
       });
   };
 
   // Dosya kaldırma
   const handleRemoveFile = (item: FileItem) => {
-    apiService.current.unshareFile(item.hash)
+    apiService.current.unshareFile(item.hash, item.ownerToken)
       .then(() => {
-        setSharedFiles(prev => prev.filter(x => x.hash !== item.hash));
-        if (socketConnected.current) {
-          webSocketService.current.getClient()?.unsubscribe(item.hash);
-        }
+        console.log('Dosya paylaşımı kaldırıldı:', item.filename);
+        setSharedFiles(prev => prev.filter(f => f.hash !== item.hash));
       })
       .catch(error => {
-        console.error('Dosya kaldırma hatası:', error);
+        console.error('Dosya paylaşımını kaldırma hatası:', error);
+        showTransferFailedNotification(item.filename, item.size, "", "Paylaşım kaldırılamadı.");
       });
   };
 
@@ -339,14 +425,12 @@ const App: React.FC = () => {
         onCopy={handleCopyLink}
         onRemove={handleRemoveFile}
         onShowQr={handleShowQr}
-        getDownloadUrl={apiService.current.getDownloadUrl.bind(apiService.current)}
         formatSize={UtilsService.formatSize}
       />
 
       {/* QR Kod Modalı */}
       <QRModal 
         selectedHash={selectedQrHash}
-        getDownloadUrl={apiService.current.getDownloadUrl.bind(apiService.current)}
         onClose={handleQrModalClose}
       />
     </div>
